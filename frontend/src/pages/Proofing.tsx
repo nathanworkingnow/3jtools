@@ -36,6 +36,7 @@ const STATUS_OPTIONS = [
   { value: 'rejected', label: 'Rejected' },
 ];
 
+// Vercel cache fix
 export default function Proofing() {
   const [jobs, setJobs] = useState<ProofJob[]>([]);
   const [loading, setLoading] = useState(true);
