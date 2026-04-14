@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied
 import os
 import requests
 from .models import Lead, LeadActivity
@@ -13,9 +14,10 @@ class LeadListCreateView(generics.ListCreateAPIView):
     
     def get_queryset(self):
         user = self.request.user
+        qs = Lead.objects.select_related('assigned_to')
         if hasattr(user, 'profile') and user.profile.role in ['admin', 'manager']:
-            return Lead.objects.all()
-        return Lead.objects.filter(assigned_to=user)
+            return qs
+        return qs.filter(assigned_to=user)
     
     def perform_create(self, serializer):
         serializer.save(assigned_to=self.request.user)
@@ -23,7 +25,15 @@ class LeadListCreateView(generics.ListCreateAPIView):
 class LeadDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LeadSerializer
     permission_classes = [permissions.IsAuthenticated, IsManagerOrReadOnly]
-    queryset = Lead.objects.all()
+    queryset = Lead.objects.select_related('assigned_to')
+    
+    def get_object(self):
+        obj = super().get_object()
+        user = self.request.user
+        if hasattr(user, 'profile') and user.profile.role not in ['admin', 'manager']:
+            if obj.assigned_to != user:
+                raise PermissionDenied("You can only view your own leads.")
+        return obj
 
 class LeadActivityView(generics.ListCreateAPIView):
     serializer_class = LeadActivitySerializer
@@ -50,7 +60,7 @@ class LeadSyncTrelloView(APIView):
         api_secret = os.getenv('TRELLO_SECRET')
         
         if not api_key or not api_secret:
-            return Response({'error': 'Trello not configured'}, status=status.HTTP_500_ERROR)
+            return Response({'error': 'Service temporarily unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
         trello_url = f"https://api.trello.com/1/cards?key={api_key}&token={api_secret}"
         card_data = {
