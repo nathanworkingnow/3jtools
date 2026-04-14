@@ -101,26 +101,6 @@ export default function Proofing() {
     }
   };
 
-  const loadComments = async (versionId: number) => {
-    try {
-      const response = await proofing.createComment(versionId, { text: '' });
-      setComments((prev) => ({ ...prev, [versionId]: response.data }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleCommentSubmit = async (versionId: number) => {
-    if (!newComment.trim()) return;
-    try {
-      await proofing.createComment(versionId, { text: newComment });
-      setNewComment('');
-      loadComments(versionId);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   if (loading) return <div className="p-8">Loading...</div>;
 
   return (
