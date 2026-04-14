@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Lenis from 'lenis';
+import Lenis from '@studio-freight/lenis';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
