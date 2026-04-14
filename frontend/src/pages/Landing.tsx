@@ -14,7 +14,7 @@ export default function Landing() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user, login, logout } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

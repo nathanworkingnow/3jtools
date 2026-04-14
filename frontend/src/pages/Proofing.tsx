@@ -41,8 +41,6 @@ export default function Proofing() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showVersions, setShowVersions] = useState<number | null>(null);
-  const [comments, setComments] = useState<Record<number, ProofComment[]>>({});
-  const [newComment, setNewComment] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     client: '',

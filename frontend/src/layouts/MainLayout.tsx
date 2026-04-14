@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -16,8 +16,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
     { path: '/leads', label: 'Leads', icon: '🎯' },
     { path: '/proofing', label: 'Proofing', icon: '📝' },
   ];
-
-  const isManager = user?.profile?.role === 'admin' || user?.profile?.role === 'manager';
 
   const handleLogout = () => {
     logout();
